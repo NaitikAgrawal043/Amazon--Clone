@@ -24,8 +24,8 @@ productsHTML=productsHTML + `
             ${(product.priceCents/100).toFixed(2)}
           </div>
 
-          <div class="product-quantity-container">
-            <select>
+          <div class="product-quantity-container ">
+            <select class="js-quantity-selecor-${product.id}">
               <option selected value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -58,29 +58,36 @@ productsHTML=productsHTML + `
 //console.log(productsHTML);
 
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
+document.querySelectorAll('.js-add-to-cart').forEach((button) => {
+  button.addEventListener('click', () => {
+    const productId = button.dataset.productId;
+    let matchingItem = cart.find((item) => item.productId === productId);
 
-document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
-    button.addEventListener('click',()=>{
-      const productId = button.dataset.productId;
-      let matchingItem;
-      cart.forEach((item)=>{
-        if(productId==item.productId){
-           matchingItem=item;
-        }
-      })
-      if(matchingItem){
-        matchingItem.quantity+=1;
-      }else{
+    // Get selected quantity from the dropdown
+    const selector = document.querySelector(`.js-quantity-selecor-${productId}`);
+    const selectedQuantity = Number(selector.value);
+
+    if (matchingItem) {
+      matchingItem.quantity += selectedQuantity;
+    } else {
       cart.push({
-        productId:productId,
-        quantity: 1 
+        productId: productId,
+        quantity: selectedQuantity
       });
     }
 
+    // Calculate total cart quantity
     let cartQuantity = 0;
-    cart.forEach((item)=>{
+    cart.forEach((item) => {
       cartQuantity += item.quantity;
     });
+    const addedMessage = button.parentElement.querySelector('.added-to-cart');
+    addedMessage.style.opacity = 1;
+
+    // Hide after 1.5 seconds
+    setTimeout(() => {
+      addedMessage.style.opacity = 0;
+    }, 1500);
     document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-    });
   });
+});
