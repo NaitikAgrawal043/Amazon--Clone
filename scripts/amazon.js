@@ -1,6 +1,9 @@
+import { cart , addToCart} from '../data/cart.js';
+import { products } from '../data/products.js';
+//order of import doesnt matter 
 let productsHTML = '';
-products.forEach((product)=>{
-productsHTML=productsHTML + `
+products.forEach((product) => {
+  productsHTML = productsHTML + `
     <div class="product-container">
           <div class="product-image-container">
             <img class="product-image"
@@ -13,7 +16,7 @@ productsHTML=productsHTML + `
 
           <div class="product-rating-container">
             <img class="product-rating-stars"
-              src="images/ratings/rating-${product.rating.stars*10}.png">
+              src="images/ratings/rating-${product.rating.stars * 10}.png">
             <div class="product-rating-count link-primary">
               ${product.rating.count}
             </div>
@@ -21,7 +24,7 @@ productsHTML=productsHTML + `
 
           <div class="product-price">
             ${'$'}
-            ${(product.priceCents/100).toFixed(2)}
+            ${(product.priceCents / 100).toFixed(2)}
           </div>
 
           <div class="product-quantity-container ">
@@ -61,20 +64,7 @@ document.querySelector('.js-products-grid').innerHTML = productsHTML;
 document.querySelectorAll('.js-add-to-cart').forEach((button) => {
   button.addEventListener('click', () => {
     const productId = button.dataset.productId;
-    let matchingItem = cart.find((item) => item.productId === productId);
-
-    // Get selected quantity from the dropdown
-    const selector = document.querySelector(`.js-quantity-selecor-${productId}`);
-    const selectedQuantity = Number(selector.value);
-
-    if (matchingItem) {
-      matchingItem.quantity += selectedQuantity;
-    } else {
-      cart.push({
-        productId: productId,
-        quantity: selectedQuantity
-      });
-    }
+    addToCart(productId);
 
     // Calculate total cart quantity
     let cartQuantity = 0;
